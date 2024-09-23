@@ -12,33 +12,24 @@ Each agent has a dedicated endpoint for handling calls and is authenticated with
 
 ## 2. Extensions Configuration
 - **File:** `extensions.conf`  
-  This file manages the dial plan, which determines how incoming and outgoing calls are processed. Key components include:
-  - **Contexts:** Define different routing paths for calls, such as internal calls, external calls, or IVR menus.
-  - **Extensions:** Specify the actions taken when a particular number is dialed, including forwarding calls, playing prompts, or executing scripts.
-  - **Applications:** Leverage Asterisk's built-in applications (like `Answer()`, `Dial()`, and `Playback()`) to create complex call flows and functionalities.
+This dialplan provides a basic framework for handling incoming calls, routing them to external or internal extensions, and offering an IVR menu for navigation.
 
 ## 3. Queue Configuration
 - **File:** `queues.conf`  
-  This file defines the behavior of call queues within the call center environment. Key aspects include:
-  - **Queue Definitions:** Set parameters like maximum wait time, number of callers allowed in the queue, and caller announcement options.
-  - **Member Definitions:** Specify which agents or devices are included in the queue and their priorities for receiving calls.
-  - **Strategy:** Define how calls are distributed among available agents (e.g., `ringall`, `leastrecent`, or `random`).
-
+The "sales" and "support" queues in the Asterisk dialplan are configured with specific parameters to manage call distribution, wait times, and announcements. The "sales" queue uses a ring-all strategy, while the "support" queue uses a round-robin strategy. Both queues have a timeout of 15 seconds, a retry limit of 5, and a service level target of 30%. The "please-hold" message is announced periodically to callers waiting in both queues.
 ---
 
 # Security Configuration
 
 ## 2.1. Firewall Configuration
 - **File:** `iptables`  
-  This file contains rules for configuring the firewall using `iptables`. Important considerations include:
-  - **Allowing SIP Traffic:** Open ports typically used for SIP (UDP 5060) and RTP (typically UDP 10000-20000).
-  - **Blocking Unauthorized Access:** Set up rules to block IPs that exhibit suspicious activity or fail authentication multiple times.
+This file defines a firewall configuration for an Asterisk system, allowing specific types of traffic (SIP, RTP, SSH, and established connections) while blocking all other incoming traffic. This helps to protect the Asterisk system from unauthorized access and potential security threats.
 
 ## 2.2. Fail2Ban Configuration
 - **File:** `jail.local`  
-  This configuration file is used to set up `fail2ban`, a security tool that scans log files and bans IP addresses that show malicious behavior. Key sections include:
-  - **Jails:** Configure specific patterns to monitor (e.g., SIP authentication failures) and define actions to take (e.g., banning the offending IP).
-  - **Ban Time:** Set durations for which an IP will be banned to prevent brute-force attacks.
+The jail.local file configures the Asterisk jail to enable security measures, specify network settings, and define the system's logging and authentication behavior. By isolating different parts of the Asterisk system and implementing security measures like retry limits and bans, the jail helps to protect the PBX from unauthorized access and potential vulnerabilities.
+
+It configures the Asterisk jail settings, enabling the jail and specifying its parameters. The jail is activated, listening on ports 5060 and 5061 using the UDP protocol. The filter is set to "asterisk," and log messages are stored in the "/var/log/asterisk/messages" directory. To protect against brute-force attacks, the jail is configured with a maximum of 5 retry attempts and a ban time of 3600 seconds (1 hour) for failed authentication attempts. This helps prevent unauthorized access to the Asterisk system.
 
 ---
 
@@ -54,15 +45,11 @@ Each agent has a dedicated endpoint for handling calls and is authenticated with
 
 ## 4.1. Asterisk Manager Interface
 - **File:** `manager.conf`  
-  This file allows secure remote monitoring and control of Asterisk through the Asterisk Management Interface (AMI). Key configurations include:
-  - **User Authentication:** Set up users with specific permissions to control which actions they can perform via the AMI.
-  - **Event Notifications:** Enable event logging for call states, channel activity, and other important system events for monitoring purposes.
+The manager.conf file configures the Asterisk Manager interface, which allows external applications to interact with and control the Asterisk PBX. The enabled parameter is set to "yes" to enable the Manager interface. The port is set to 5038, which is the default port for the Manager interface. The bindaddr is set to "0.0.0.0" to allow connections from any IP address. The [admin] section defines the credentials for the "admin" user, with a password of "adminpassword" and full read and write permissions. This allows the "admin" user to perform all operations on the Asterisk PBX through the Manager interface.
 
 ## 4.2. Call Detail Records
 - **File:** `cdr.conf`  
-  This file configures how call detail records (CDRs) are generated and stored. Key points include:
-  - **CDR Storage:** Choose the storage method (e.g., CSV files, SQL database) and define the format of the records.
-  - **Field Customization:** Customize the fields that will be logged for each call, such as start time, end time, call duration, and caller/callee IDs.
+This file enables Call Detail Recording (CDR) in Asterisk, logging both answered and unanswered calls. The CSV format is used for CDR logging, with GMT time disabled and unique ID and user field information included.
 
 ---
 
