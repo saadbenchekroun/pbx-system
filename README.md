@@ -4,10 +4,11 @@ Asterisk is a powerful open-source framework for building communications applica
 
 ## 1. SIP Configuration
 - **File:** `pjsip.conf`  
-  This file contains configurations for SIP (Session Initiation Protocol) endpoints, which can include user agents (agents) and trunks (connections to external networks). Key sections in this file typically include:
-  - **Endpoints:** Define individual devices or user agents, specifying parameters like transport protocols, codecs, and authentication.
-  - **Aors:** Address of Record (AOR) sections link endpoints to actual IP addresses, helping Asterisk manage device registration and availability.
-  - **Identities:** Set up authentication for the endpoints, detailing how users authenticate when connecting.
+This configuration sets up a SIP application that can connect to a SIP service provider (trunk) and manage calls for two call center agents.
+The application listens for incoming calls on all network interfaces and uses UDP for communication.
+It authenticates with the trunk provider using a username and password.
+Incoming calls are routed to specific contexts based on their origin (external or internal).
+Each agent has a dedicated endpoint for handling calls and is authenticated with the application using separate credentials.
 
 ## 2. Extensions Configuration
 - **File:** `extensions.conf`  
