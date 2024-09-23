@@ -1,0 +1,6 @@
+-A INPUT -p udp --dport 5060 -j ACCEPT
+-A INPUT -p udp --dport 10000:20000 -j ACCEPT
+-A INPUT -p udp --dport 4569 -j ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p udp -m udp --dport 22 -j ACCEPT
+-A INPUT -j DROP
